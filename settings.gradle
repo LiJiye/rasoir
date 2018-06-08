@@ -1,0 +1,6 @@
+rootProject.name = 'rasoir'
+include 'rasoir-server'
+include 'rasoir-executor'
+include 'rasoir-common'
+include 'rasoir-dispatcher'
+
