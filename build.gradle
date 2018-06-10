@@ -21,14 +21,66 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
+ext.deps = [kotlinlib           : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+            jodatime            : 'joda-time:joda-time:2.9.9',
+            guava               : 'com.google.guava:guava:23.0',
+            dbutils             : 'commons-dbutils:commons-dbutils:1.7',
+            commonsio           : 'commons-io:commons-io:2.6',
+            slf4j               : 'org.slf4j:slf4j-log4j12:1.7.25',
+            mysqljdbc           : 'mysql:mysql-connector-java:5.1.44',
+            coroutines          : 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.20',
+            guice               : 'com.google.inject:guice:4.2.0',
+            commonsconfiguration: 'org.apache.commons:commons-configuration2:2.2',
+            commonslang         : 'org.apache.commons:commons-lang3:3.7',
+            commonsbeanutils    : 'commons-beanutils:commons-beanutils:1.9.3',
+            junit               : 'junit:junit:4.12']
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+    apply plugin: 'idea'
+    apply plugin: 'distribution'
+
+    group = rootProject.group
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+
+    kotlin {
+        experimental {
+            coroutines 'enable'
+        }
+    }
+
+    jar {
+        manifest {}
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+
+    dependencies {
+        testCompile deps.junit
+        compile deps.kotlinlib
+        compile deps.jodatime
+        compile deps.guava
+        compile deps.dbutils
+        compile deps.commonsio
+        compile deps.slf4j
+        compile deps.mysqljdbc
+        compile deps.coroutines
+        compile deps.guice
+        compile deps.commonsconfiguration
+        compile deps.commonslang
+        compile deps.commonsbeanutils
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+    }
 }
